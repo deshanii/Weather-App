@@ -4,6 +4,7 @@ let weather_img = document.querySelector(".container .weather-img img");
 let temp = document.querySelector(".container .temp");
 let weatherMain = document.querySelector(".container .weather_main_1");
 let otherDetails = document.querySelector(".container .other-details");
+let forecastBox = document.querySelector(".container .forecast-box");
 
 let apiKey ="a000c572e298127ed2c49d594cf592b3"
 
@@ -42,6 +43,8 @@ let getWeatherDetails = (city)=>{
                 <span>Pressure</span>
                 <p>${data.main.pressure}mbar</p>
             </div>`;
+    }).catch(() =>{
+        alert("Error! city name not found");
     })
 }
 
@@ -55,8 +58,48 @@ cityInput.addEventListener("keyup", (e)=>{
 let getWeatherForecast = (city) =>{
     const forecast_url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
     fetch(forecast_url).then((res) => res.json()).then((data) =>{
-        console.log(data);
+        const uniqueForecastdays =[];
+        const fiveDaysForecast = data.list.filter(forecast =>{
+            const forecastDate = new Date(forecast.dt_txt).getDate();
+
+            if(!uniqueForecastdays.includes(forecastDate)){
+                return uniqueForecastdays.push(forecastDate);
+            }
+        })
+
+        forecastBox.innerHTML = "";
+
+    fiveDaysForecast.forEach((weatherItem,index) => {
+        forecastBox.insertAdjacentHTML("beforeend", createForecastCard(weatherItem,index));
+    });    
+    }).catch(() =>{
+        alert("Error! city name not found");
     })
+}
+let createForecastCard = (item,index) =>{
+    
+    if(index === 0){
+        return ``;
+    }else{
+        let forecastImage = `https://openweathermap.org/img/wn/${item.weather[0].icon}.png`;
+        let forecastD = new Date(item.dt_txt);
+        let foreCastYear = forecastD.getFullYear();
+        let forecastMonth = forecastD.getMonth();
+        let forecastDate = forecastD.getDate();
+
+        forecastMonth = forecastMonth < 10 ? "0" +forecastMonth : forecastMonth;
+        forecastD = forecastDate < 10 ? "0" + forecastDate : forecastDate;
+
+        return `
+         <div class="card">
+            <p class="forecast-date">${foreCastYear}-${forecastMonth}-${forecastDate}</p>
+            <div class="forecast-img">
+                <img src="${forecastImage}" alt="">
+            </div>
+            <h5 class="forecast-temp">${item.main.temp}&#176;</h5>
+        </div>`;
+    }
+
 }
 
 getWeatherForecast(cityInput.value);

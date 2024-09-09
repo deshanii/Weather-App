@@ -105,7 +105,7 @@ body{
 .container .weather-info .other-details{
     height: 135px;
     width: 100%;
-    border-top: .5px soli #fff;
+    border-top: .5px solid #fff;
     margin-top: 0px;
 }
 
@@ -135,6 +135,15 @@ body{
     height: 100px;
     /* border: 1px solid red; */
     margin-top: 17px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction:column ;
+    overflow-x:auto ;
+    cursor: pointer;
+}
+
+.container .forecast-box::-webkit-scrollbar{
+    display: none;
 }
 
 .container .forecast-box .card{
@@ -143,6 +152,9 @@ body{
     background: #1a202a;
     border-radius: 15px;
     color: #fff;
+    margin-left: 10px;
+    position: relative;
+    left: -10px;
 }
 
 .container .forecast-box .card .forecast-date{
